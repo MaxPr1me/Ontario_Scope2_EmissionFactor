@@ -8,9 +8,13 @@ This repository processes IESO data to compute electricity emission factors for 
    ```bash
    pip install -r requirements.txt
    ```
-3. Execute the script:
+3. Execute one of the scripts:
    ```bash
+   # Original emission factor workflow
    python src/emission_factors.py
+
+   # Converted analysis from Scott_Code_Feb2025.ipynb
+   python src/scott_code.py
    ```
 
 A simple GitHub Actions workflow is provided to demonstrate running the script automatically on each push.
