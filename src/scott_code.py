@@ -149,72 +149,53 @@ def transform_generator_data(gen_output_df):
     return reshaped_data
 
 
-### 3.5 Prompt for Emission Rates
+### 3.5 Load Emission Rates from File
 def get_emission_rates():
-    print("\nDo you want to use custom emission rates for generator technologies? (y/n)")
-    use_custom = input().strip().lower()
+    """Load generator emission rates from ``data/emission_rates.csv``."""
+    path = os.path.join("data", "emission_rates.csv")
+    if not os.path.isfile(path):
+        raise FileNotFoundError(
+            f"Required emission rate file not found at {path}. "
+            "Create this CSV with columns 'Technology' and 'Emission Rate (t CO2e/GWh)'."
+        )
 
-    # Default emission rates in t CO2e/GWh
-    default_rates = {
-        "Biofuel": 6.15,
-        "Hydro": 0,
-        "Natural Gas": 525,
-        "Nuclear": 0.15,
-        "Solar": 6.15,
-        "Wind": 0.74
-    }
+    df = pd.read_csv(path)
+    expected_cols = {"Technology", "Emission Rate (t CO2e/GWh)"}
+    if not expected_cols.issubset(df.columns):
+        raise ValueError(
+            f"Emission rate file must contain columns {expected_cols}."
+        )
 
-    if use_custom == 'y':
-        print("\nEnter custom emission rates (t CO2e/GWh). Press Enter to keep default values:")
-        for tech in default_rates:
-            user_input = input(f"{tech} (default {default_rates[tech]}): ").strip()
-            if user_input:
-                try:
-                    default_rates[tech] = float(user_input)
-                except ValueError:
-                    print(f"Invalid input for {tech}, using default value {default_rates[tech]}.")
-    else:
-        print("\nUsing default emission rates.")
-
-    # Display the final emission rates
-    print("\nFinal Emission Rates (t CO2e/GWh):")
-    print(pd.DataFrame.from_dict(default_rates, orient='index', columns=['Emission Rate (t CO2e/GWh)']))
+    print("\nLoaded emission rates from:", path)
+    print(df.to_string(index=False))
+    input("\nIf you wish to change these values, edit the file above and then press Enter to continue...")
 
     # Convert to t CO2e/MWh for calculations
-    return {tech: rate / 1000 for tech, rate in default_rates.items()}
+    return {row['Technology']: row['Emission Rate (t CO2e/GWh)'] / 1000 for _, row in df.iterrows()}
 
-### 3.6 Prompt for Emission Factors of Neighboring Regions
+### 3.6 Load Emission Factors of Neighboring Regions from File
 def get_neighboring_emission_factors():
-    print("\nDo you want to use custom emission factors for neighboring regions? (y/n)")
-    use_custom = input().strip().lower()
+    """Load neighboring region emission factors from ``data/neighboring_emission_factors.csv``."""
+    path = os.path.join("data", "neighboring_emission_factors.csv")
+    if not os.path.isfile(path):
+        raise FileNotFoundError(
+            f"Required neighboring emission factors file not found at {path}. "
+            "Create this CSV with columns 'Region' and 'Emission Factor (t CO2e/GWh)'."
+        )
 
-    # Default emission factors in t CO2e/GWh
-    default_factors = {
-        "Manitoba": 2.2,
-        "Michigan": 502,
-        "Minnesota": 463,
-        "New York": 211,
-        "Quebec": 1.7
-    }
+    df = pd.read_csv(path)
+    expected_cols = {"Region", "Emission Factor (t CO2e/GWh)"}
+    if not expected_cols.issubset(df.columns):
+        raise ValueError(
+            f"Neighboring emission factor file must contain columns {expected_cols}."
+        )
 
-    if use_custom == 'y':
-        print("\nEnter custom emission factors (t CO2e/GWh). Press Enter to keep default values:")
-        for region in default_factors:
-            user_input = input(f"{region} (default {default_factors[region]}): ").strip()
-            if user_input:
-                try:
-                    default_factors[region] = float(user_input)
-                except ValueError:
-                    print(f"Invalid input for {region}, using default value {default_factors[region]}.")
-    else:
-        print("\nUsing default emission factors.")
-
-    # Display the final emission factors
-    print("\nFinal Emission Factors for Neighboring Regions (t CO2e/GWh):")
-    print(pd.DataFrame.from_dict(default_factors, orient='index', columns=['Emission Factor (t CO2e/GWh)']))
+    print("\nLoaded emission factors for neighboring regions from:", path)
+    print(df.to_string(index=False))
+    input("\nIf you wish to change these values, edit the file above and then press Enter to continue...")
 
     # Convert to t CO2e/MWh for calculations
-    return {region: factor / 1000 for region, factor in default_factors.items()}
+    return {row['Region']: row['Emission Factor (t CO2e/GWh)'] / 1000 for _, row in df.iterrows()}
 
 ### 3.7 Parse and Clean Demand Data
 def parse_and_clean_demand(file_path):
