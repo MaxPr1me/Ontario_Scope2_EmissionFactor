@@ -22,13 +22,19 @@ def install_dependencies():
 ## 3. Helper Functions
 ### 3.1 Fetch data from URLs
 def download_file(url, save_path):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(save_path, 'wb') as f:
-            f.write(response.content)
-        print(f"Downloaded: {save_path}")
-    else:
-        raise Exception(f"Failed to download {url} (status code {response.status_code})")
+    """Download ``url`` to ``save_path`` if it does not already exist."""
+    if os.path.exists(save_path):
+        print(f"File already exists: {save_path}")
+        return save_path
+
+    response = requests.get(url, timeout=30)
+    response.raise_for_status()
+
+    with open(save_path, "wb") as f:
+        f.write(response.content)
+    print(f"Downloaded: {save_path}")
+
+    return save_path
 
 ### 3.2 Parse and Clean Generator Data
 def parse_and_clean_generator_month(file_path):
