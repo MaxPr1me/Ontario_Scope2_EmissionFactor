@@ -14,7 +14,17 @@ import time
 
 ## 2. Install Dependencies (if running in Colab)
 def install_dependencies():
-    """Placeholder to maintain compatibility with the original notebook."""
+    """Install runtime dependencies if required.
+
+    This placeholder function currently performs no actions and simply
+    exists for compatibility with the original notebook.
+
+    Returns:
+        None
+
+    Side Effects:
+        None.
+    """
     pass
 
 
@@ -22,24 +32,49 @@ def install_dependencies():
 ## 3. Helper Functions
 ### 3.1 Fetch data from URLs
 def download_file(url, save_path):
+    """Download a file from ``url`` and write it to ``save_path``.
+
+    Args:
+        url (str): Location of the file to download.
+        save_path (str): Path on disk where the file will be saved.
+
+    Returns:
+        None
+
+    Side Effects:
+        Writes the downloaded file to ``save_path`` and prints a message.
+        Raises an exception if the download fails.
+    """
     response = requests.get(url)
     if response.status_code == 200:
-        with open(save_path, 'wb') as f:
+        with open(save_path, "wb") as f:
             f.write(response.content)
         print(f"Downloaded: {save_path}")
     else:
-        raise Exception(f"Failed to download {url} (status code {response.status_code})")
+        raise Exception(
+            f"Failed to download {url} (status code {response.status_code})"
+        )
 
 ### 3.2 Parse and Clean Generator Data
 def parse_and_clean_generator_month(file_path):
-    # Read the file line-by-line to preprocess and fix inconsistencies
+    """Parse and clean a monthly generator file.
+
+    Args:
+        file_path (str): Path to the CSV file downloaded from IESO.
+
+    Returns:
+        pandas.DataFrame: Cleaned generator data for the month.
+
+    Side Effects:
+        Prints a message for any malformed row encountered.
+    """
     cleaned_rows = []
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         lines = file.readlines()
         for line in lines[3:]:  # Skip the first three rows (headers)
-            line = line.strip().rstrip(',')  # Remove trailing spaces and commas
-            fields = line.split(',')  # Split the line into fields
-            if len(fields) == 28:  # Only keep rows with the correct number of fields
+            line = line.strip().rstrip(",")  # Remove trailing spaces and commas
+            fields = line.split(",")
+            if len(fields) == 28:
                 cleaned_rows.append(fields)
             else:
                 print(f"Skipped row with {len(fields)} fields: {line}")
@@ -57,6 +92,17 @@ def parse_and_clean_generator_month(file_path):
 
 ### 3.3 Aggregate Generator Data for a Year
 def aggregate_generator_data(year):
+    """Download and combine monthly generator data for a given year.
+
+    Args:
+        year (int): Year of data to download.
+
+    Returns:
+        pandas.DataFrame: Concatenated data for all months of ``year``.
+
+    Side Effects:
+        Files are downloaded into the ``data`` directory.
+    """
     base_url = "https://reports-public.ieso.ca/public/GenOutputCapabilityMonth/"
     data_dir = "data"
     os.makedirs(data_dir, exist_ok=True)
@@ -99,6 +145,17 @@ def aggregate_generator_data(year):
 
 ### 3.4 Transform Generator Data to Match Demand/Trade Flow Format
 def transform_generator_data(gen_output_df):
+    """Reshape generator output data for analysis.
+
+    Args:
+        gen_output_df (pd.DataFrame): Raw generator output dataframe.
+
+    Returns:
+        pd.DataFrame: Data with hours as rows and fuel-generator columns.
+
+    Side Effects:
+        Raises ``ValueError`` if no rows contain ``Measurement == 'Output'``.
+    """
     # Step 1: Keep only rows where Measurement is "Output"
     gen_output_df = gen_output_df[gen_output_df['Measurement'] == 'Output']
 
@@ -152,6 +209,14 @@ def transform_generator_data(gen_output_df):
 
 ### 3.5 Prompt for Emission Rates
 def get_emission_rates():
+    """Prompt the user for generator emission rates.
+
+    Returns:
+        dict: Mapping of generator technology to emission rate in t CO2e/MWh.
+
+    Side Effects:
+        Prompts for user input and prints a summary table.
+    """
     print("\nDo you want to use custom emission rates for generator technologies? (y/n)")
     use_custom = input().strip().lower()
 
@@ -186,6 +251,14 @@ def get_emission_rates():
 
 ### 3.6 Prompt for Emission Factors of Neighboring Regions
 def get_neighboring_emission_factors():
+    """Prompt the user for emission factors of neighboring regions.
+
+    Returns:
+        dict: Mapping of region name to emission factor in t CO2e/MWh.
+
+    Side Effects:
+        Prompts for user input and prints a summary table.
+    """
     print("\nDo you want to use custom emission factors for neighboring regions? (y/n)")
     use_custom = input().strip().lower()
 
@@ -219,8 +292,19 @@ def get_neighboring_emission_factors():
 
 ### 3.7 Parse and Clean Demand Data
 def parse_and_clean_demand(file_path):
+    """Load and clean hourly demand data from ``file_path``.
+
+    Args:
+        file_path (str): CSV file containing demand data.
+
+    Returns:
+        pd.DataFrame: Cleaned demand data.
+
+    Side Effects:
+        Reads ``file_path`` from disk.
+    """
     # Read the file once to find rows to skip
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         lines = file.readlines()
 
     # Identify rows to skip based on the presence of double backslashes
@@ -236,8 +320,19 @@ def parse_and_clean_demand(file_path):
 
 ### 3.8 Parse and Clean Trade Flow Data
 def parse_and_clean_trade_flow(file_path):
+    """Load and clean trade flow data from ``file_path``.
+
+    Args:
+        file_path (str): CSV file containing intertie schedule flow data.
+
+    Returns:
+        pd.DataFrame: Cleaned trade flow data.
+
+    Side Effects:
+        Reads ``file_path`` from disk.
+    """
     # Read the file once to find rows to skip
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         lines = file.readlines()
 
     # Identify rows to skip based on the presence of backslashes
@@ -277,6 +372,9 @@ def transform_trade_flow(trade_flow_df):
 
     Returns:
         pd.DataFrame: The transformed trade flow DataFrame.
+
+    Side Effects:
+        None.
     """
     # Step 1: Keep only "Date" and "Hour" columns
     transformed_df = trade_flow_df[["Date", "Hour"]].copy()
@@ -311,6 +409,19 @@ def transform_trade_flow(trade_flow_df):
 
 ### 3.10 Calculate supply-based emission factors for each timestep
 def calculate_supply_based_ef(transformed_gen_data, emission_rates):
+    """Calculate hourly supply-based emission factors.
+
+    Args:
+        transformed_gen_data (pd.DataFrame): Generator data after transformation.
+        emission_rates (dict): Emission rates by technology in t CO2e/MWh.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: The supply-based emission factors
+        and total output for each timestep.
+
+    Side Effects:
+        None.
+    """
 
     # Initialize a list for the output data
     ef_rows = []
@@ -392,6 +503,9 @@ def calculate_consumption_based_ef(supplybased_ef, demand_df, transformed_trade_
     Returns:
         pd.DataFrame: Consumption-based emission factors.
         pd.DataFrame: Spot-check data for debugging.
+
+    Side Effects:
+        Prints progress updates and warnings for missing emission factors.
     """
     # Check if all inputs have the same length
     if not (len(supplybased_ef) == len(demand_df) == len(transformed_trade_flow)):
@@ -505,6 +619,18 @@ def calculate_consumption_based_ef(supplybased_ef, demand_df, transformed_trade_
 ## 4. Setup Data for a Specific Year
 ### 4.1 Example setup for a single year (2020)
 def setup_year_data(year):
+    """Download and prepare data for a single year.
+
+    Args:
+        year (int): The year to process (2020-2024).
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: Generator output,
+        demand, and trade flow data.
+
+    Side Effects:
+        Downloads data files to the ``data`` directory.
+    """
     if year < 2020 or year > 2024:
         raise ValueError("Valid years for generator data are 2020-2024.")
 
@@ -537,6 +663,12 @@ def setup_year_data(year):
 ### Notes: Downloaded generator data, demand data and flow data is all in MW
 
 def main():
+    """Run the command line workflow for emission factor calculations.
+
+    Side Effects:
+        Prompts for user input, downloads data, prints progress messages and
+        writes CSV files to the ``data/cleaned_data`` directory.
+    """
     install_dependencies()
 
     # Get emission rates
