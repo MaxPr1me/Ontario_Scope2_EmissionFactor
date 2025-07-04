@@ -14,7 +14,7 @@ This repository processes IESO data to compute electricity emission factors for 
    python src/emission_factors.py
 
    # Converted analysis from Scott_Code_Feb2025.ipynb
-   python src/scott_code.py
+   python src/scott_code.py --year 2022 --emission-rate 'Natural Gas=500'
    ```
 
 A simple GitHub Actions workflow is provided to demonstrate running the script automatically on each push.

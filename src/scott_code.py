@@ -4,12 +4,32 @@
 
 
 ## 1. Import Necessary Libraries
+import argparse
 import pandas as pd
 import numpy as np
 import os
 import requests
 import time
 
+
+def parse_args():
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Calculate Ontario emission factors."
+    )
+    parser.add_argument(
+        "--year",
+        type=int,
+        default=2020,
+        help="Year for analysis (valid years are 2020-2024).",
+    )
+    parser.add_argument(
+        "--emission-rate",
+        action="append",
+        metavar="TECH=VALUE",
+        help="Override emission rate in t CO2e/GWh; may be given multiple times.",
+    )
+    return parser.parse_args()
 
 
 ## 2. Install Dependencies (if running in Colab)
@@ -150,10 +170,16 @@ def transform_generator_data(gen_output_df):
     return reshaped_data
 
 
-### 3.5 Prompt for Emission Rates
-def get_emission_rates():
-    print("\nDo you want to use custom emission rates for generator technologies? (y/n)")
-    use_custom = input().strip().lower()
+### 3.5 Retrieve Emission Rates
+def get_emission_rates(overrides=None):
+    """Return emission rates in t CO2e/MWh.
+
+    Parameters
+    ----------
+    overrides : list[str] | None
+        Optional list of ``TECH=VALUE`` strings to override the default rates
+        expressed in t CO2e/GWh.
+    """
 
     # Default emission rates in t CO2e/GWh
     default_rates = {
@@ -162,59 +188,42 @@ def get_emission_rates():
         "Natural Gas": 525,
         "Nuclear": 0.15,
         "Solar": 6.15,
-        "Wind": 0.74
+        "Wind": 0.74,
     }
 
-    if use_custom == 'y':
-        print("\nEnter custom emission rates (t CO2e/GWh). Press Enter to keep default values:")
-        for tech in default_rates:
-            user_input = input(f"{tech} (default {default_rates[tech]}): ").strip()
-            if user_input:
-                try:
-                    default_rates[tech] = float(user_input)
-                except ValueError:
-                    print(f"Invalid input for {tech}, using default value {default_rates[tech]}.")
-    else:
-        print("\nUsing default emission rates.")
+    overrides = overrides or []
+    for item in overrides:
+        try:
+            tech, value = item.split("=", 1)
+            tech = tech.strip().title()
+            if tech in default_rates:
+                default_rates[tech] = float(value)
+            else:
+                print(f"Unknown technology '{tech}' ignored.")
+        except ValueError:
+            print(f"Invalid emission rate override '{item}'. Expected TECH=VALUE")
 
-    # Display the final emission rates
     print("\nFinal Emission Rates (t CO2e/GWh):")
-    print(pd.DataFrame.from_dict(default_rates, orient='index', columns=['Emission Rate (t CO2e/GWh)']))
+    print(pd.DataFrame.from_dict(default_rates, orient="index", columns=["Emission Rate (t CO2e/GWh)"]))
 
     # Convert to t CO2e/MWh for calculations
     return {tech: rate / 1000 for tech, rate in default_rates.items()}
 
-### 3.6 Prompt for Emission Factors of Neighboring Regions
+### 3.6 Retrieve Emission Factors of Neighboring Regions
 def get_neighboring_emission_factors():
-    print("\nDo you want to use custom emission factors for neighboring regions? (y/n)")
-    use_custom = input().strip().lower()
+    """Return default emission factors for neighboring regions in t CO2e/MWh."""
 
-    # Default emission factors in t CO2e/GWh
     default_factors = {
         "Manitoba": 2.2,
         "Michigan": 502,
         "Minnesota": 463,
         "New York": 211,
-        "Quebec": 1.7
+        "Quebec": 1.7,
     }
 
-    if use_custom == 'y':
-        print("\nEnter custom emission factors (t CO2e/GWh). Press Enter to keep default values:")
-        for region in default_factors:
-            user_input = input(f"{region} (default {default_factors[region]}): ").strip()
-            if user_input:
-                try:
-                    default_factors[region] = float(user_input)
-                except ValueError:
-                    print(f"Invalid input for {region}, using default value {default_factors[region]}.")
-    else:
-        print("\nUsing default emission factors.")
-
-    # Display the final emission factors
     print("\nFinal Emission Factors for Neighboring Regions (t CO2e/GWh):")
-    print(pd.DataFrame.from_dict(default_factors, orient='index', columns=['Emission Factor (t CO2e/GWh)']))
+    print(pd.DataFrame.from_dict(default_factors, orient="index", columns=["Emission Factor (t CO2e/GWh)"]))
 
-    # Convert to t CO2e/MWh for calculations
     return {region: factor / 1000 for region, factor in default_factors.items()}
 
 ### 3.7 Parse and Clean Demand Data
@@ -537,16 +546,17 @@ def setup_year_data(year):
 ### Notes: Downloaded generator data, demand data and flow data is all in MW
 
 def main():
+    args = parse_args()
+
     install_dependencies()
 
     # Get emission rates
-    emission_rates = get_emission_rates()
+    emission_rates = get_emission_rates(args.emission_rate)
 
     # Get emission factors for neighboring regions
     neighboring_emission_factors = get_neighboring_emission_factors()
 
-    #Download Data
-    year = int(input("Enter the year for analysis (valid years are 2020-2024): ") or 2020)
+    year = args.year
     gen_output_df, demand_df, trade_flow_df = setup_year_data(year)
 
 
