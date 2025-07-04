@@ -12,8 +12,8 @@ import time
 
 
 
-## 3. Helper Functions
-### 3.1 Fetch data from URLs
+## 2. Helper Functions
+### 2.1 Fetch data from URLs
 def download_file(url, save_path):
     """Download ``url`` to ``save_path`` if it does not already exist."""
     if os.path.exists(save_path):
@@ -29,7 +29,7 @@ def download_file(url, save_path):
 
     return save_path
 
-### 3.2 Parse and Clean Generator Data
+### 2.2 Parse and Clean Generator Data
 def parse_and_clean_generator_month(file_path):
     # Read the file line-by-line to preprocess and fix inconsistencies
     cleaned_rows = []
@@ -54,10 +54,10 @@ def parse_and_clean_generator_month(file_path):
 
     return raw_df
 
-### 3.3 Aggregate Generator Data for a Year
+### 2.3 Aggregate Generator Data for a Year
 def aggregate_generator_data(year):
     base_url = "https://reports-public.ieso.ca/public/GenOutputCapabilityMonth/"
-    data_dir = "data"
+    data_dir = os.path.join("data", "IESO", str(year), "Generator")
     os.makedirs(data_dir, exist_ok=True)
 
     # Prepare list for monthly data
@@ -96,7 +96,7 @@ def aggregate_generator_data(year):
 
     return yearly_data
 
-### 3.4 Transform Generator Data to Match Demand/Trade Flow Format
+### 2.4 Transform Generator Data to Match Demand/Trade Flow Format
 def transform_generator_data(gen_output_df):
     # Step 1: Keep only rows where Measurement is "Output"
     gen_output_df = gen_output_df[gen_output_df['Measurement'] == 'Output']
@@ -149,7 +149,7 @@ def transform_generator_data(gen_output_df):
     return reshaped_data
 
 
-### 3.5 Load Emission Rates from File
+### 2.5 Load Emission Rates from File
 def get_emission_rates():
     """Load generator emission rates from ``data/emission_rates.csv``."""
     path = os.path.join("data", "emission_rates.csv")
@@ -173,7 +173,7 @@ def get_emission_rates():
     # Convert to t CO2e/MWh for calculations
     return {row['Technology']: row['Emission Rate (t CO2e/GWh)'] / 1000 for _, row in df.iterrows()}
 
-### 3.6 Load Emission Factors of Neighboring Regions from File
+### 2.6 Load Emission Factors of Neighboring Regions from File
 def get_neighboring_emission_factors():
     """Load neighboring region emission factors from ``data/neighboring_emission_factors.csv``."""
     path = os.path.join("data", "neighboring_emission_factors.csv")
@@ -197,7 +197,7 @@ def get_neighboring_emission_factors():
     # Convert to t CO2e/MWh for calculations
     return {row['Region']: row['Emission Factor (t CO2e/GWh)'] / 1000 for _, row in df.iterrows()}
 
-### 3.7 Parse and Clean Demand Data
+### 2.7 Parse and Clean Demand Data
 def parse_and_clean_demand(file_path):
     # Read the file once to find rows to skip
     with open(file_path, 'r') as file:
@@ -214,7 +214,7 @@ def parse_and_clean_demand(file_path):
 
     return raw_df
 
-### 3.8 Parse and Clean Trade Flow Data
+### 2.8 Parse and Clean Trade Flow Data
 def parse_and_clean_trade_flow(file_path):
     # Read the file once to find rows to skip
     with open(file_path, 'r') as file:
@@ -241,7 +241,7 @@ def parse_and_clean_trade_flow(file_path):
 
     return raw_df
 
-### 3.9 Transform Trade Flow Data
+### 2.9 Transform Trade Flow Data
 def transform_trade_flow(trade_flow_df):
     """
     Transforms the trade flow DataFrame by keeping relevant columns:
@@ -289,7 +289,7 @@ def transform_trade_flow(trade_flow_df):
 
     return transformed_df
 
-### 3.10 Calculate supply-based emission factors for each timestep
+### 2.10 Calculate supply-based emission factors for each timestep
 def calculate_supply_based_ef(transformed_gen_data, emission_rates):
 
     # Initialize a list for the output data
@@ -356,7 +356,7 @@ def calculate_supply_based_ef(transformed_gen_data, emission_rates):
 
     return supplybased_ef, total_output_df
 
-### 3.11 Calculate consumption-based emission factors for each timestep.
+### 2.11 Calculate consumption-based emission factors for each timestep.
 
 def calculate_consumption_based_ef(supplybased_ef, demand_df, transformed_trade_flow, neighboring_emission_factors, total_output_df):
     """
@@ -482,24 +482,30 @@ def calculate_consumption_based_ef(supplybased_ef, demand_df, transformed_trade_
 
 
 
-## 4. Setup Data for a Specific Year
-### 4.1 Example setup for a single year (2020)
+## 3. Setup Data for a Specific Year
+### 3.1 Example setup for a single year (2020)
 def setup_year_data(year):
     if year < 2020 or year > 2024:
         raise ValueError("Valid years for generator data are 2020-2024.")
+
+    year_dir = os.path.join("data", "IESO", str(year))
+    demand_dir = os.path.join(year_dir, "Demand")
+    trade_dir = os.path.join(year_dir, "Trade")
+    os.makedirs(demand_dir, exist_ok=True)
+    os.makedirs(trade_dir, exist_ok=True)
 
     # Aggregate generator data
     gen_output_df = aggregate_generator_data(year)
 
     # Parse and clean demand data
     demand_url = f"https://reports-public.ieso.ca/public/Demand/PUB_Demand_{year}.csv"
-    demand_path = f"data/PUB_Demand_{year}.csv"
+    demand_path = os.path.join(demand_dir, f"PUB_Demand_{year}.csv")
     download_file(demand_url, demand_path)
     demand_df = parse_and_clean_demand(demand_path)
 
     # Parse and clean trade flow data
     trade_flow_url = f"https://reports-public.ieso.ca/public/IntertieScheduleFlowYear/PUB_IntertieScheduleFlowYear_{year}.csv"
-    trade_flow_path = f"data/PUB_IntertieScheduleFlowYear_{year}.csv"
+    trade_flow_path = os.path.join(trade_dir, f"PUB_IntertieScheduleFlowYear_{year}.csv")
     download_file(trade_flow_url, trade_flow_path)
     trade_flow_df = parse_and_clean_trade_flow(trade_flow_path)
 
@@ -508,8 +514,8 @@ def setup_year_data(year):
 
 
 
-## 5. Main Execution
-### 5.1 Main entry point
+## 4. Main Execution
+### 4.1 Main entry point
 
 ### Notes: Downloaded generator data, demand data and flow data is all in MW
 
@@ -526,8 +532,18 @@ def main():
     # Get emission factors for neighboring regions
     neighboring_emission_factors = get_neighboring_emission_factors()
 
-    #Download Data
+    # Download Data
     year = int(input("Enter the year for analysis (valid years are 2020-2024): ") or 2020)
+
+    output_dir = os.path.join("data", "output")
+    os.makedirs(output_dir, exist_ok=True)
+    consumption_path = os.path.join(output_dir, f"Consumption-based_EF_{year}.csv")
+
+    if os.path.exists(consumption_path):
+        print(f"Consumption-based EF for {year} already exists at {consumption_path}.")
+        print("Skipping analysis.")
+        return
+
     gen_output_df, demand_df, trade_flow_df = setup_year_data(year)
 
 
@@ -576,13 +592,6 @@ def main():
     # Calculate supply-based EF and total output
     supplybased_ef, total_output_df = calculate_supply_based_ef(transformed_gen_data, emission_rates)
 
-    # Save the supply-based EF to CSV
-    output_dir = "data/cleaned_data"
-    os.makedirs(output_dir, exist_ok=True)
-
-    supplybased_ef.to_csv(f"{output_dir}/Supply-based_EF_{year}.csv", index=False)
-    print(f"Supply-based EF data saved to: {output_dir}/Supply-based_EF_{year}.csv")
-
 
     # Calculate consumption-based EF and retrieve spot-check data
     consumption_based_ef, spot_check_df = calculate_consumption_based_ef(
@@ -590,12 +599,8 @@ def main():
       )
 
     # Save the consumption-based EF to CSV
-    consumption_based_ef.to_csv(f"{output_dir}/Consumption-based_EF_{year}.csv", index=False)
-    print(f"Consumption-based EF data saved to: {output_dir}/Consumption-based_EF_{year}.csv")
-
-    # Save the spot-check data to CSV
-    spot_check_df.to_csv(f"{output_dir}/Spot_Check_Data_{year}.csv", index=False)
-    print(f"Spot check data saved to: {output_dir}/Spot_Check_Data_{year}.csv")
+    consumption_based_ef.to_csv(consumption_path, index=False)
+    print(f"Consumption-based EF data saved to: {consumption_path}")
 
 if __name__ == "__main__":
     main()
