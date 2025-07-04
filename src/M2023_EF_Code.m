@@ -18,7 +18,8 @@ filename{1} = 'C:\Users\maxpr\Google Drive\Academics\EF CODE\Supply\GOC-2023.xls
 %Direct zonal demand data as downloaded from IESO data directory
 filename{2} = 'C:\Users\maxpr\Google Drive\Academics\EF CODE\Demand\PUB_DemandZonal_2023.csv';
 %Custom generator location and technology list
-filename{3} = 'Generator_List.xlsx';
+% Updated to use the CSV version of the generator list
+filename{3} = 'Generator_List.csv';
 
 %Direct power flows from other state/province connections as downloaded from IESO data directory
 filename{4} = 'C:\Users\maxpr\Google Drive\Academics\EF CODE\Transmission\PUB_IntertieScheduleFlowYear_2023.csv';
