@@ -12,13 +12,6 @@ import time
 
 
 
-## 2. Install Dependencies (if running in Colab)
-def install_dependencies():
-    """Placeholder to maintain compatibility with the original notebook."""
-    pass
-
-
-
 ## 3. Helper Functions
 ### 3.1 Fetch data from URLs
 def download_file(url, save_path):
@@ -531,13 +524,14 @@ def setup_year_data(year):
 ## 5. Main Execution
 ### 5.1 Main entry point
 
-# Mount Google Drive
-
-
 ### Notes: Downloaded generator data, demand data and flow data is all in MW
 
 def main():
-    install_dependencies()
+
+    # Simple runtime check for required packages
+    import importlib
+    for pkg in ["pandas", "numpy", "requests", "openpyxl"]:
+        importlib.import_module(pkg)
 
     # Get emission rates
     emission_rates = get_emission_rates()
