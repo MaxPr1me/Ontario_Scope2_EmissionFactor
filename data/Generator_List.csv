@@ -1,0 +1,185 @@
+﻿Generator List,Technology,Region
+ABKENORA,Hydro,Northwest
+ADELAIDE,Wind,West
+AGUASABON,Hydro,Northwest
+ALEXANDER,Hydro,Northwest
+AMARANTH,Wind,Southwest
+AMHERST ISLAND,Wind,East
+APIROQUOIS,Hydro,Northeast
+ARMOW,Wind,Bruce
+ARNPRIOR,Hydro,East
+ATIKOKAN-G1,Biofuel,Northwest
+AUBREYFALLS,Hydro,Northeast
+BARRETT,Hydro,East
+BECK1,Hydro,Niagara
+BECK2,Hydro,Niagara
+BECK2 PGS,Hydro,Niagara
+BELLE RIVER,Wind,West
+BLAKE,Wind,Southwest
+BORNISH,Wind,West
+BOW LAKE,Wind,Northeast
+BOW LAKE 2,Wind,Northeast
+BRIGHTON BEACH,Gas,West
+BRUCEA-G1,Nuclear,Bruce
+BRUCEA-G2,Nuclear,Bruce
+BRUCEA-G3,Nuclear,Bruce
+BRUCEA-G4,Nuclear,Bruce
+BRUCEB-G5,Nuclear,Bruce
+BRUCEB-G6,Nuclear,Bruce
+BRUCEB-G7,Nuclear,Bruce
+BRUCEB-G8,Nuclear,Bruce
+CALSTOCKGS,Biofuel,Northeast
+CAMERONFALLS,Hydro,Northwest
+CANYON,Hydro,Northeast
+CARDINAL,Gas,East
+CARIBOUFALLS,Hydro,Northwest
+CARMICHAEL,Hydro,Northeast
+CEDAR POINT 2,Wind,West
+CHATSFALLS,Hydro,East
+CHENAUX,Hydro,East
+CLERGUE,Hydro,Northeast
+COMBER,Wind,West
+CRYSLER,Wind,Bruce
+DA WATSON,Hydro,Northeast
+DARLINGTON-G1,Nuclear,Toronto
+DARLINGTON-G2,Nuclear,Toronto
+DARLINGTON-G3,Nuclear,Toronto
+DARLINGTON-G4,Nuclear,Toronto
+DECEWFALLS,Hydro,Niagara
+DECEWND1,Hydro,Niagara
+DESJOACHIMS,Hydro,Essa
+DESTEC,Gas,East
+DILLON,Wind,West
+DOWCHEMICAL,Gas,West
+DPNTMTLND,Gas,East
+EARFALLS,Hydro,Northwest
+EAST LAKE,Wind,West
+EAST WINDSOR-G1,Gas,West
+EAST WINDSOR-G2,Gas,West
+ERIEAU,Wind,West
+FORTFRANCSWC,Hydro,Northwest
+GARTSHORE,Hydro,Northeast
+GOSFIELDWGS,Wind,West
+GOSHEN,Wind,Southwest
+GOULAIS,Wind,Northeast
+GRAND VALLEY 3,Wind,Southwest
+GRANDSF,Solar,Niagara
+GRANDWF,Wind,Niagara
+GREENFIELD ENERGY CENTRE-G1,Gas,West
+GREENFIELD ENERGY CENTRE-G2,Gas,West
+GREENFIELD ENERGY CENTRE-G3,Gas,West
+GREENFIELD ENERGY CENTRE-G4,Gas,West
+GREENFIELD SOUTH-G1,Gas,West
+GREENFIELD SOUTH-G2,Gas,West
+GREENWICH,Wind,Northwest
+GTAA-G1,Gas,Toronto
+GTAA-G2,Gas,Toronto
+GTAA-G3,Gas,Toronto
+HALTONHILLS-LT_G1,Gas,Southwest
+HALTONHILLS-LT_G2,Gas,Southwest
+HALTONHILLS-LT_G3,Gas,Southwest
+HARMON,Hydro,Northeast
+HARMON 2,Hydro,Northeast
+HARRIS,Hydro,Northeast
+HENVEY NORTH,Wind,Northeast
+HENVEY SOUTH,Wind,Northeast
+HOLDEN,Hydro,Northeast
+HOLINGSWTH,Hydro,Northeast
+JERICHO,Wind,West
+K2WIND,Wind,Bruce
+KAKABEKA,Hydro,Northwest
+KAPGS,Gas,Northeast
+KINGSBRIDGE,Wind,Bruce
+KINGSTONSF,Solar,East
+KIPLING,Hydro,Northeast
+KIPLING 2,Hydro,Northeast
+LAKESUPERIOR,Gas,Northeast
+LANDON,Wind,West
+LENNOX-G1,Gas,East
+LENNOX-G2,Gas,East
+LENNOX-G3,Gas,East
+LENNOX-G4,Gas,East
+LITTLELONG,Hydro,Northeast
+LITTLELONG 2,Hydro,Northeast
+LONGSAULTE,Hydro,Northeast
+LOWER WHITE RIVER,Hydro,Northwest
+LOWERNOTCH,Hydro,Northeast
+MACKAYGS,Hydro,Northeast
+MANITOUFALLS,Hydro,Northwest
+MCLEANSMTNWF-LT_AG_T1,Wind,Northeast
+MISSION,Hydro,Northeast
+MTNCHUTE,Hydro,East
+NAGAGAMI,Hydro,Northeast
+NANTICOKE SOLAR,Solar,Southwest
+NAPANEE-G1,Gas,East
+NAPANEE-G2,Gas,East
+NAPANEE-G3,Gas,East
+NIPIGONGS,Gas,Northwest
+NORTH KENT,Wind,West
+NORTHBAYGS,Gas,Northeast
+NORTHLAND POWER SOLAR FACILITIES,Solar,Northeast
+NPCOCHRANE,Gas,Northeast
+NPIROQFALLS,Gas,Northeast
+NPKIRKLAND-G1-G5,Gas,Northeast
+NPKIRKLAND-G6,Gas,Northeast
+OTTERRAPIDS,Hydro,Northeast
+PAROCHES,Wind,West
+PETER SUTHERLAND SR,Hydro,Northeast
+PICKERINGA-G1,Nuclear,Toronto
+PICKERINGA-G4,Nuclear,Toronto
+PICKERINGB-G5,Nuclear,Toronto
+PICKERINGB-G6,Nuclear,Toronto
+PICKERINGB-G7,Nuclear,Toronto
+PICKERINGB-G8,Nuclear,Toronto
+PINEPORTAGE,Hydro,Northwest
+PORT BURWELL,Wind,Southwest
+PORTALMA-T1,Wind,West
+PORTALMA-T3,Wind,West
+PORTLANDS-G1,Gas,Toronto
+PORTLANDS-G2,Gas,Toronto
+PORTLANDS-G3,Gas,Toronto
+PRINCEFARM,Wind,Northeast
+RAILBEDWF-LT_AG_SR,Wind,West
+RAYNER,Hydro,Northeast
+REDROCK,Hydro,Northeast
+RIPLEY SOUTH,Wind,Bruce
+ROMNEY,Wind,West
+SANDUSK-LT_AG_T1,Wind,Southwest
+SAUNDERS,Hydro,East
+SHANNON,Wind,Southwest
+SILVERFALLS,Hydro,Northwest
+SITHE GOREWAY-G11,Gas,Toronto
+SITHE GOREWAY-G12,Gas,Toronto
+SITHE GOREWAY-G13,Gas,Toronto
+SITHE GOREWAY-G15,Gas,Toronto
+SMOKY,Hydro,Northeast
+SMOKY 2,Hydro,Northeast
+SOUTHGATE SF,Solar,Southwest
+SPENCE,Wind,West
+STCLAIRCGS,Gas,West
+STEEPHILL,Hydro,Northeast
+STEWARTVLE,Hydro,East
+STONE MILLS SF,Solar,East
+SUMMERHAVEN,Wind,Southwest
+TADOUGLAS,Gas,Toronto
+TAOHSC,Gas,Ottawa
+TASARNIA,Gas,West
+TAWINDSOR,Gas,West
+TBAYBOWATER CTS,Biofuel,Northwest
+THOROLDCGS,Gas,Niagara
+THUNDERBAY-G2,Biofuel,Northwest
+THUNDERBAY-G3,Biofuel,Northwest
+TUNISGS,Gas,Northeast
+UMBATAFALLS,Hydro,Northwest
+UNDERWOOD,Wind,Bruce
+UPPER WHITE RIVER,Hydro,Northwest
+WELLS,Hydro,Northeast
+WEST LINCOLN NRWF,Wind,Niagara
+WESTWINDSOR,Gas,West
+WHITBYCGS,Gas,Toronto
+WHITEDOG,Hydro,Northwest
+WINDSOR AIRPORT SF,Solar,West
+WOLFE ISLAND,Wind,East
+YORKCGS-G1,Gas,Essa
+YORKCGS-G2,Gas,Essa
+ZURICH,Wind,Southwest
