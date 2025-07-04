@@ -1,6 +1,6 @@
 # Ontario Scope2 Emission Factor
 
-This repository processes IESO data to compute electricity emission factors for Ontario. It originally shipped as a Google Colab notebook but now also includes a standalone Python script that can be run locally or via GitHub Actions.
+This repository processes IESO data to compute electricity emission factors for Ontario using a standalone Python script.
 
 ## Running locally
 1. Install the dependencies:
@@ -9,16 +9,10 @@ This repository processes IESO data to compute electricity emission factors for 
    ```
 2. Ensure the files `data/emission_rates.csv` and `data/neighboring_emission_factors.csv` exist. Edit them if you need to change the default values.
    The script downloads the required IESO data automatically.
-3. Execute one of the scripts:
+3. Run the emission factor script:
    ```bash
-    # Original emission factor workflow
-    python src/emission_factors.py
-
-    # Converted analysis from Scott_Code_Feb2025.ipynb
-    python src/scott_code.py
-    ```
-
-A simple GitHub Actions workflow is provided to demonstrate running the script automatically on each push.
+   python src/Ontario_EF_Code.py
+   ```
 
 ## Citation
 
