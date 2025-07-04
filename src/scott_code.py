@@ -358,8 +358,8 @@ def parse_and_clean_trade_flow(file_path):
 
 ### 3.9 Transform Trade Flow Data
 def transform_trade_flow(trade_flow_df):
-    """
-    Transforms the trade flow DataFrame by keeping relevant columns:
+    """Transform the trade flow DataFrame by keeping relevant columns.
+
     - Retains "Date" and "Hour" columns.
     - Removes columns starting with "Total".
     - Removes columns ending with "Imp" or "Exp".
@@ -489,9 +489,14 @@ def calculate_supply_based_ef(transformed_gen_data, emission_rates):
 
 ### 3.11 Calculate consumption-based emission factors for each timestep.
 
-def calculate_consumption_based_ef(supplybased_ef, demand_df, transformed_trade_flow, neighboring_emission_factors, total_output_df):
-    """
-    Calculate the consumption-based emission factors for each timestep.
+def calculate_consumption_based_ef(
+    supplybased_ef,
+    demand_df,
+    transformed_trade_flow,
+    neighboring_emission_factors,
+    total_output_df,
+):
+    """Calculate the consumption-based emission factors for each timestep.
 
     Args:
         supplybased_ef (pd.DataFrame): Supply-based emission factors.
