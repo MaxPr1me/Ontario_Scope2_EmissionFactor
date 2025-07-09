@@ -9,9 +9,13 @@ This repository processes IESO data to compute electricity emission factors for 
    ```
 2. Ensure the files `data/emission_rates.csv` and `data/neighboring_emission_factors.csv` exist. Edit them if you need to change the default values.
    The script downloads the required IESO data automatically.
-3. Run the emission factor script:
+3. Run the Ontario-wide emission factor script:
    ```bash
    python src/Ontario_EF_Code.py
+   ```
+4. Generate subregional emission factors:
+   ```bash
+   python src/SubOntario_EF_Code.py
    ```
 
 ## Citation
