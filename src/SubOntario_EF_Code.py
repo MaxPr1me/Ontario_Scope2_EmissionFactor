@@ -2,7 +2,7 @@
 """Subregional emission factor analysis for Ontario.
 
 This script downloads generator, zonal demand and trade flow data from IESO
-and computes hourly supply- and demand-based emission factors for ten
+and computes hourly supply- and consumption-based emission factors for ten
 Ontario subregions. The approach mirrors the Ontario-wide calculations but
 includes an additional linear programming step to allocate flows between
 subregions.
@@ -21,14 +21,14 @@ from scipy.optimize import linprog
 def download_file(url: str, save_path: str) -> str:
     """Download a file if it does not exist locally."""
     if os.path.exists(save_path):
-        print(f"File already exists: {save_path}")
+        # print(f"File already exists: {save_path}")
         return save_path
 
     response = requests.get(url, timeout=30)
     response.raise_for_status()
     with open(save_path, "wb") as fh:
         fh.write(response.content)
-    print(f"Downloaded: {save_path}")
+    # print(f"Downloaded: {save_path}")
     return save_path
 
 
@@ -472,19 +472,19 @@ def main():
     supply_df.insert(0, "Delivery Date", gen_transformed["Delivery Date"])
     supply_df.insert(1, "Ontario", ont_ef * 1000)
 
-    demand_df_out = pd.DataFrame(subregion_ef, columns=REGIONS)
-    demand_df_out.insert(0, "Hour", gen_transformed["Hour"])
-    demand_df_out.insert(0, "Delivery Date", gen_transformed["Delivery Date"])
-    demand_df_out.insert(1, "Ontario", new_ont_ef * 1000)
+    consumption_df_out = pd.DataFrame(subregion_ef, columns=REGIONS)
+    consumption_df_out.insert(0, "Hour", gen_transformed["Hour"])
+    consumption_df_out.insert(0, "Delivery Date", gen_transformed["Delivery Date"])
+    consumption_df_out.insert(1, "Ontario", new_ont_ef * 1000)
 
     out_dir = os.path.join("data", "output")
     os.makedirs(out_dir, exist_ok=True)
     supply_path = os.path.join(out_dir, f"SubOntario_Supply_EF_{year}.csv")
-    demand_path = os.path.join(out_dir, f"SubOntario_Demand_EF_{year}.csv")
+    consumption_path = os.path.join(out_dir, f"SubOntario_Consumption_EF_{year}.csv")
     supply_df.to_csv(supply_path, index=False)
-    demand_df_out.to_csv(demand_path, index=False)
-    print(f"Supply-based EF saved to: {supply_path}")
-    print(f"Demand-based EF saved to: {demand_path}")
+    consumption_df_out.to_csv(consumption_path, index=False)
+    # print(f"Supply-based EF saved to: {supply_path}")
+    print(f"Consumption-based EF data saved to: {consumption_path}")
 
 
 if __name__ == "__main__":
