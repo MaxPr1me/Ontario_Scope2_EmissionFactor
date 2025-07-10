@@ -171,6 +171,7 @@ def setup_year_data(year: int):
     trade_path = os.path.join(trade_dir, f"PUB_IntertieScheduleFlowYear_{year}.csv")
     download_file(trade_url, trade_path)
     trade_df = parse_and_clean_trade_flow(trade_path)
+    trade_df = transform_trade_flow(trade_df)
 
     return gen_df, demand_df, zonal_df, trade_df
 
