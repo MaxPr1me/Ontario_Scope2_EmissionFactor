@@ -238,7 +238,7 @@ def calculate_new_ontario_ef(ont_ef, demand_df, trade_df, neighboring_factors):
     manitoba = trade_df["MANITOBA Total Flow"].astype(float).to_numpy()
     michigan = trade_df[[c for c in trade_df.columns if c.startswith("MICHIGAN")][0]].astype(float).to_numpy()
     minnesota = trade_df[[c for c in trade_df.columns if c.startswith("MINNESOTA")][0]].astype(float).to_numpy()
-    newyork = trade_df[[c for c in trade_df.columns if c.startswith("NEW YORK")][0]].astype(float).to_numpy()
+    newyork = trade_df[[c for c in trade_df.columns if c.startswith("NEW-YORK")][0]].astype(float).to_numpy()
     quebec = trade_df["QUEBEC Total Flow"].astype(float).to_numpy()
 
     ont_demand = demand_df["Ontario Demand"].astype(float).to_numpy()
