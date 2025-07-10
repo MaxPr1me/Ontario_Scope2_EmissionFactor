@@ -230,8 +230,12 @@ def calculate_supply_based_ef(outputs: np.ndarray, ef: np.ndarray):
     return ont_ef
 
 
-def calculate_new_ontario_ef(ont_ef, demand_df, trade_df, neighboring_factors):
-    ef_trade = np.array([neighboring_factors[r[:3].upper()] for r in ["Manitoba", "Michigan", "Minnesota", "New York", "Quebec"]])
+def calculate_new_ontario_ef(ont_ef, demand_df, trade_df, neighboring_factors, total_output):
+    """Calculate Ontario consumption-based EF accounting for imports and exports."""
+    ef_trade = np.array([
+        neighboring_factors[r[:3].upper()] for r in ["Manitoba", "Michigan", "Minnesota", "New York", "Quebec"]
+    ])
+
     n_steps = len(ont_ef)
     new_ef = np.zeros(n_steps)
 
@@ -246,10 +250,29 @@ def calculate_new_ontario_ef(ont_ef, demand_df, trade_df, neighboring_factors):
     trades = np.vstack([manitoba, michigan, minnesota, newyork, quebec])
 
     for t in range(n_steps):
-        trade = np.where(trades[:, t] < 0, -trades[:, t], 0)
-        self_supplied = ont_demand[t] - trade.sum()
-        total = (ef_trade * trade).sum() + ont_ef[t] * self_supplied
-        new_ef[t] = total / ont_demand[t] if ont_demand[t] != 0 else 0
+        flows = trades[:, t]
+        exports = np.where(flows > 0, flows, 0).sum()
+        imports = np.where(flows < 0, -flows, 0)
+        total_imports = imports.sum()
+        import_emissions = (imports * ef_trade).sum()
+
+        supply_ef = ont_ef[t]
+        ont_demand_mwh = ont_demand[t]
+        total_output_mwh = total_output[t]
+
+        net_balance = total_output_mwh - exports + total_imports
+        balance_difference = net_balance - ont_demand_mwh
+        adjusted_emissions = balance_difference * supply_ef if balance_difference > 0 else 0
+
+        total_emissions = (
+            supply_ef * total_output_mwh
+            - supply_ef * exports
+            + import_emissions
+            - adjusted_emissions
+        )
+
+        new_ef[t] = total_emissions / ont_demand_mwh if ont_demand_mwh != 0 else 0
+
     return new_ef
 
 
@@ -462,7 +485,8 @@ def main():
 
     outputs, ef = compute_generation_by_region(gen_transformed, gen_list, emission_rates)
     ont_ef = calculate_supply_based_ef(outputs, ef)
-    new_ont_ef = calculate_new_ontario_ef(ont_ef, demand_df, trade_df, neighbor_factors)
+    ont_output = outputs.sum(axis=1)
+    new_ont_ef = calculate_new_ontario_ef(ont_ef, demand_df, trade_df, neighbor_factors, ont_output)
 
     lp_results = subregion_lp(outputs, zonal_df, trade_df)
     subregion_ef = compute_subregion_ef(outputs, ef, zonal_df, lp_results, neighbor_factors)
@@ -472,10 +496,10 @@ def main():
     supply_df.insert(0, "Delivery Date", gen_transformed["Delivery Date"])
     supply_df.insert(1, "Ontario", ont_ef * 1000)
 
-    consumption_df_out = pd.DataFrame(subregion_ef, columns=REGIONS)
-    consumption_df_out.insert(0, "Hour", gen_transformed["Hour"])
+    consumption_df_out = pd.DataFrame(subregion_ef * 1000, columns=REGIONS)
     consumption_df_out.insert(0, "Delivery Date", gen_transformed["Delivery Date"])
-    consumption_df_out.insert(1, "Ontario", new_ont_ef * 1000)
+    consumption_df_out.insert(1, "Hour", gen_transformed["Hour"])
+    consumption_df_out.insert(2, "Ontario", new_ont_ef * 1000)
 
     out_dir = os.path.join("data", "output")
     os.makedirs(out_dir, exist_ok=True)
